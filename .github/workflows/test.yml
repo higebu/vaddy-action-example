@@ -20,19 +20,19 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - name: go build
-      run: |
-        go build
-    - name: vaddy test
-      run: |
-        mkdir -p ~/ssh
-        echo "${VADDY_PRIVATE_KEY}" > ~/ssh/key
-        chmod 600 ~/ssh/key
-        ./vaddy-example &
-        ssh -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -i ~/ssh/key -N -R 0.0.0.0:${VADDY_REMOTE_PORT}:${VADDY_YOUR_LOCAL_IP}:${VADDY_YOUR_LOCAL_PORT} portforward@pfd.vaddy.net &
+    - run: go build
+    - name: run server
+      run: ./actions-vaddy-example &
       env:
-        VADDY_PRIVATE_KEY: ${{ secrets.VADDY_PRIVATE_KEY }}
-        VADDY_REMOTE_PORT: ${{ secrets.VADDY_REMOTE_PORT }}
-        VADDY_YOUR_LOCAL_IP: ${{ secrets.VADDY_YOUR_LOCAL_IP }}
-        VADDY_YOUR_LOCAL_PORT: ${{ secrets.VADDY_YOUR_LOCAL_PORT }}
+        VADDY_VERIFICATION_CODE: ${{ secrets.VADDY_VERIFICATION_CODE }}
         LISTEN_ADDR: ${{ secrets.VADDY_YOUR_LOCAL_IP }}:${{ secrets.VADDY_YOUR_LOCAL_PORT }}
+    - uses: higebu/actions-vaddy@v1
+      with:
+        user: ${{ secrets.VADDY_USER }}
+        auth_key: ${{ secrets.VADDY_AUTH_KEY }}
+        fqdn: ${{ secrets.VADDY_FQDN }}
+        verification_code: ${{ secrets.VADDY_VERIFICATION_CODE }}
+        private_key: ${{ secrets.VADDY_PRIVATE_KEY }}
+        remote_port: ${{ secrets.VADDY_REMOTE_PORT }}
+        local_ip: ${{ secrets.VADDY_YOUR_LOCAL_IP }}
+        local_port: ${{ secrets.VADDY_YOUR_LOCAL_PORT }}
