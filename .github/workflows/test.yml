@@ -1,19 +1,23 @@
 name: test
 
-on: [push, pull_request]
+on: 
+  push:
+  pull_request:
+  schedule:
+    - cron:  '0 3 * * *'
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Set up Go 1.14
-      uses: actions/setup-go@v1
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
       with:
-        go-version: 1.14
+        go-version: 1.x
       id: go
     - name: checkout
       uses: actions/checkout@v2
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
