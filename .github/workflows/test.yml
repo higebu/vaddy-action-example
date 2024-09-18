@@ -25,11 +25,11 @@ jobs:
           ${{ runner.os }}-go-
     - run: go build
     - name: run server
-      run: ./actions-vaddy-example &
+      run: ./vaddy-action-example &
       env:
         VADDY_VERIFICATION_CODE: ${{ secrets.VADDY_VERIFICATION_CODE }}
         LISTEN_ADDR: ${{ secrets.VADDY_YOUR_LOCAL_IP }}:${{ secrets.VADDY_YOUR_LOCAL_PORT }}
-    - uses: higebu/actions-vaddy@master
+    - uses: higebu/vaddy-action@master
       with:
         user: ${{ secrets.VADDY_USER }}
         auth_key: ${{ secrets.VADDY_AUTH_KEY }}
